@@ -1,6 +1,8 @@
 #!/bin/bash
 # Encode script by Sprakle
 
+audioFormats=('mp3' 'flac' 'wav')
+
 doesNeedEncoding ()
 {
 	input=$1
@@ -39,6 +41,14 @@ BITRATE=$3 # bitrate to encode non mp3 files to, max bitrate of mp3 files
 echo "Encoding tracks from '$FROM' to '$TO'"
 
 find "$FROM" -name '*.*' | while read trackName; do
+
+	# Make sure file is a music file
+	extension="${trackName##*.}"
+	if [[ ! ${audioFormats[*]} =~ "$extension" ]]; then
+		echo "found non music file: $trackName"
+		continue
+	fi
+
 	echo -e "\e[1mProcessing track: '$trackName'\e[0m"
 	
  	newPath=$trackName
