@@ -38,7 +38,6 @@ BITRATE=$3 # bitrate to encode non mp3 files to, max bitrate of mp3 files
 
 echo "Encoding tracks from '$FROM' to '$TO'"
 
-echo "$FROM"
 find "$FROM" -name '*.*' | while read trackName; do
 	echo -e "\e[1mProcessing track: '$trackName'\e[0m"
 	
