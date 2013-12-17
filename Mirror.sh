@@ -30,7 +30,7 @@ echo "Lockfile test succeeded, beggining sync"
 # and shutdown the phone ftp server
 
 lftp -p "$PORT" -u "$USER","$PASSWD" "$HOST" <<END_SCRIPT
-mirror --reverse --delete-first --only-newer --verbose "$SYNC_DIR"  "$PHONE_DIR"
+mirror -RL --reverse --delete-first --only-newer --verbose "$SYNC_DIR"  "$PHONE_DIR"
 quote site shutdown
 quit
 END_SCRIPT
