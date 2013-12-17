@@ -44,12 +44,15 @@ find "$FROM" -name '*.*' | while read trackName; do
 	
  	newPath=$trackName
 	
-	#Replace FROM folder name with TO
+	# Replace FROM folder name with TO
 	newPath=`sed "s|$FROM|$TO|g" <<< $newPath`
 	
-	#Replace extension with mp3
+	# Replace extension with mp3
 	newPath="${newPath%.*}.mp3"
-
+	
+	# Create directory if it doesn't exist
+	mkdir -p "${newPath%/*}/"
+	
 	# if not acceptable, encode
 	if doesNeedEncoding "$trackName" "$BITRATE"; then
 		./ffmpeg -nostdin -v panic -i "$trackName" -b:a $BITRATE"k" "$newPath"
