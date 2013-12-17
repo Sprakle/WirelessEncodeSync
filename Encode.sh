@@ -68,8 +68,8 @@ find "$FROM" -name '*.*' | while read trackName; do
 	fi
 
 	echo "File will only be linked"
-	target=`realpath .`/$trackName
-	link=`realpath .`/$newPath
+	target=$trackName
+	link=$newPath
 	ln -s "$target" "$link"
 
 done
