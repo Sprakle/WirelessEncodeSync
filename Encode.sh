@@ -53,6 +53,12 @@ find "$FROM" -name '*.*' | while read trackName; do
 	# Create directory if it doesn't exist
 	mkdir -p "${newPath%/*}/"
 	
+	# if the track file already exists, skip
+	if [ -f "$newPath" ]; then
+		echo "File already exists, skipping"
+		continue
+	fi
+	
 	# if not acceptable, encode
 	if doesNeedEncoding "$trackName" "$BITRATE"; then
 		./ffmpeg -nostdin -v panic -i "$trackName" -b:a $BITRATE"k" "$newPath"
