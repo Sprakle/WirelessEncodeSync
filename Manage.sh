@@ -11,6 +11,27 @@ FTP_USER=sprakle
 FTP_PASSWD=nexusFTPswag
 FTP_DIRECTORY=Music # where the phone keeps its music
 
+# check for files that have been deleted from the music folder
+echo "Checking for files deleted from the music directory"
+find "$ENCODE_DIRECTORY" -name '*.*' | while read trackName; do
+	
+	newPath=$trackName
+
+	# Replace ENCODE directory name with MUSIC directory name
+	newPath=`sed "s|$ENCODE_DIRECTORY|$MUSIC_DIRECTORY|g" <<< $newPath`
+	
+	# Remove extension
+	newPath="${newPath%.*}"
+	
+	# Check
+	if [ ! -f "$newPath".* ]; then
+		echo "Deleted file found: $newPath"
+		rm "$trackName"
+		continue
+	fi
+done
+echo "Done checking"
+
 #Encode required files
 ./Encode.sh "$MUSIC_DIRECTORY" "$ENCODE_DIRECTORY" $MAX_BITRATE
 
