@@ -1,15 +1,15 @@
 #!/bin/bash
 # Encode and Sync script by Sprakle
 
-MUSIC_DIRECTORY=$1 # on the computer
-ENCODE_DIRECTORY=$2 # where to store encoded music
-MAX_BITRATE=$3 # max bitrate per track
+MUSIC_DIRECTORY="$HOME/Nexus Sync/Music" # on the computer
+ENCODE_DIRECTORY="$HOME/Nexus Sync/Encoded" # where to store encoded music
+MAX_BITRATE=256 # max bitrate per track
 
-HOST_IP=$4
-HOST_PORT=$5
-FTP_USER=$6
-FTP_PASSWD=$7
-FTP_DIRECTORY=$8 # where the phone keeps its music
+HOST_IP=192.168.0.21
+HOST_PORT=2121
+FTP_USER=sprakle
+FTP_PASSWD=nexusFTPswag
+FTP_DIRECTORY=Music # where the phone keeps its music
 
 #Encode required files
 ./Encode.sh "$MUSIC_DIRECTORY" "$ENCODE_DIRECTORY" $MAX_BITRATE
