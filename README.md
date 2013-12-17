@@ -20,8 +20,8 @@ Wireless encode and sync script intended for android music collections.
 		* If it is a lossless file, encode it to the set bitrate and copy to the encode directory
 		* If it is an mp3 file above the set bitrate, encode it to a lower bitrate and copy to the encode directory
 		* If it is an mp3 file equal to or below the set bitrate, create a symbolic link to it in the encode directory
-	3. Connect to the phone using FTP
-	4. Synchronize the phone to the encode directory
+3. Connect to the phone using FTP
+4. Synchronize the phone to the encode directory
 
 ## Other Information:
 * Synchronization is one way only, the music files on your computer will never be affected
