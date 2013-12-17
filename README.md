@@ -11,6 +11,10 @@ Wireless encode and sync script intended for android music collections.
 3. Run ./Manage.sh
 	* You may need to set the executable permission on the scripts
 	* Use a cron job if you want to the the script more than once
+	
+## Dependencies:
+* lftp
+* libmp3lame0
 
 ## Under the hood:
 1. Check to see if the user deleted any files from their collection
