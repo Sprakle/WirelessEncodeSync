@@ -2,6 +2,7 @@ WirelessEncodeSync
 ==================
 
 Wireless encode and sync script intended for android music collections.
+**Warning:** This will delete all music on your phone that isn't also on your computer.
 
 ## To sync:
 1. Download an FTP server android app
