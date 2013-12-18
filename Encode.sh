@@ -3,6 +3,11 @@
 
 audioFormats=('mp3' 'flac' 'wav')
 
+# settings
+FROM=$1  # on the computer
+TO=$2  # where the phone keeps its music
+BITRATE=$3 # bitrate to encode non mp3 files to, max bitrate of mp3 files
+
 doesNeedEncoding ()
 {
 	input=$1
@@ -33,15 +38,10 @@ doesNeedEncoding ()
 	return 1
 }
 
-# settings
-FROM=$1  # on the computer
-TO=$2  # where the phone keeps its music
-BITRATE=$3 # bitrate to encode non mp3 files to, max bitrate of mp3 files
-
-echo "Encoding tracks from '$FROM' to '$TO'"
-
-find "$FROM" -name '*.*' -type f | while read trackName; do
-
+encode()
+{
+	trackName=$1
+	
 	# Make sure file is a music file
 	extension="${trackName##*.}"
 	if [[ ! ${audioFormats[*]} =~ "$extension" ]]; then
@@ -79,7 +79,12 @@ find "$FROM" -name '*.*' -type f | while read trackName; do
 	target=$trackName
 	link=$newPath
 	ln -s "$target" "$link"
+}
 
+echo "Encoding tracks from '$FROM' to '$TO'"
+
+find "$FROM" -type f | while read trackName; do
+	encode "$trackName"
 done
 
 echo "Completed encoding or copying of all tracks"
