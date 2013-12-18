@@ -11,6 +11,20 @@ FTP_USER=sprakle
 FTP_PASSWD=nexusFTPswag
 FTP_DIRECTORY=Music # where the phone keeps its music
 
+# setting overrides
+while getopts "m:e:b:h:p:u:s:f:" opt; do
+	case $opt in
+		m)	MUSIC_DIRECTORY=$OPTARG;;
+		e)	ENCODE_DIRECTORY=$OPTARG;;
+		b)	MAX_BITRATE=$OPTARG;;
+		h)	HOST_IP=$OPTARG;;
+		p)	HOST_PORT=$OPTARG;;
+		u)	FTP_USER=$OPTARG;;
+		s)	FTP_PASSWD=$OPTARG;;
+		f)	FTP_DIRECTORY=$OPTARG;;
+	esac
+done
+
 # check for files that have been deleted from the music folder
 echo "Checking for files deleted from the music directory"
 find "$ENCODE_DIRECTORY" -name '*.*' -type f | while read trackName; do
