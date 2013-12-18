@@ -81,12 +81,20 @@ encode()
 	ln -s "$target" "$link"
 }
 
+tryNotify()
+{
+	echo "$1"
+	if type "notify-send" > /dev/null; then
+		notify-send "Android Wireless Sync" "$1"
+	fi
+}
+
 echo "Encoding tracks from '$FROM' to '$TO'"
 
 find "$FROM" -type f | while read trackName; do
 	encode "$trackName"
 done
 
-echo "Completed encoding or copying of all tracks"
+tryNotify "Completed encoding or copying of all tracks"
 
 exit 0

@@ -16,6 +16,7 @@ Wireless encode and sync script intended for android music collections.
 ## Dependencies:
 * lftp
 * libmp3lame0
+* notify-osd (optional, used to notify user at key points)
 
 ## Under the hood:
 1. Check to see if the user deleted any files from their collection

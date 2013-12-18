@@ -9,19 +9,32 @@ SYNC_DIR=$5 # on the computer
 PHONE_DIR=$6 # where the phone keeps its music
 LOCKFILE="/var/lock/sync_android"
 
+tryNotify()
+{
+	echo "$1"
+	if type "notify-send" > /dev/null; then
+		notify-send "Android Wireless Sync" "$1"
+	fi
+}
+
 # first, scan the phone to see if it is there. If not, exit
 
 echo "Checking for device..."
-nc -z "$HOST" "$PORT" || exit;
-echo "Device found"
+if nc -z "$HOST" "$PORT"; then
+	echo "Device found"
+else
+	tryNotify "Could not find device"
+	exit 1
+fi
 
 # lockfile
 
 if [ ! -e $LOCKFILE ]; then
-        trap "rm -f $LOCKFILE; exit" INT TERM EXIT
-        touch $LOCKFILE
+	trap "rm -f $LOCKFILE; exit" INT TERM EXIT
+	touch $LOCKFILE
 else
-        exit
+	tryNotify "Lockfile test failed, device is being synced by someone else"
+	exit 1
 fi
 
 echo "Lockfile test succeeded, beggining sync"
@@ -34,7 +47,7 @@ mirror -RL --reverse --delete-first --only-newer --verbose "$SYNC_DIR"  "$PHONE_
 quit
 END_SCRIPT
 
-echo "Completed sync"
+tryNotify "Completed synchronization"
 
 rm $LOCKFILE
 exit 0
