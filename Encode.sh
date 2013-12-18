@@ -72,7 +72,6 @@ find "$FROM" -name '*.*' | while read trackName; do
 	if doesNeedEncoding "$trackName" "$BITRATE"; then
 		./ffmpeg -nostdin -v panic -i "$trackName" -b:a $BITRATE"k" "$newPath"
 		echo "Encoded to: '$newPath'"
-		sleep 1
 		continue
 	fi
 
