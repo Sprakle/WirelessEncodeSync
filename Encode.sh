@@ -40,7 +40,7 @@ BITRATE=$3 # bitrate to encode non mp3 files to, max bitrate of mp3 files
 
 echo "Encoding tracks from '$FROM' to '$TO'"
 
-find "$FROM" -name '*.*' | while read trackName; do
+find "$FROM" -name '*.*' -type f | while read trackName; do
 
 	# Make sure file is a music file
 	extension="${trackName##*.}"
@@ -54,7 +54,7 @@ find "$FROM" -name '*.*' | while read trackName; do
  	newPath=$trackName
 	
 	# Replace FROM folder name with TO
-	newPath=$(sed "s|$FROM|$TO|g" <<< $newPath)
+	newPath=$(sed "s|$FROM|$TO|g" <<< "$newPath")
 	
 	# Replace extension with mp3
 	newPath="${newPath%.*}.mp3"

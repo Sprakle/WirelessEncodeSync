@@ -13,18 +13,18 @@ FTP_DIRECTORY=Music # where the phone keeps its music
 
 # check for files that have been deleted from the music folder
 echo "Checking for files deleted from the music directory"
-find "$ENCODE_DIRECTORY" -name '*.*' | while read trackName; do
+find "$ENCODE_DIRECTORY" -name '*.*' -type f | while read trackName; do
 	
 	newPath=$trackName
 
 	# Replace ENCODE directory name with MUSIC directory name
-	newPath=$(sed "s|$ENCODE_DIRECTORY|$MUSIC_DIRECTORY|g" <<< $newPath)
+	newPath=$(sed "s|$ENCODE_DIRECTORY|$MUSIC_DIRECTORY|g" <<< "$newPath")
 	
 	# Remove extension
 	newPath="${newPath%.*}"
 	
 	# Check
-	if [ ! -f "$newPath".* ]; then
+	if [ ! -e "$newPath".* ]; then
 		echo "Deleted file found: $newPath"
 		rm "$trackName"
 		continue
