@@ -15,7 +15,7 @@ doesNeedEncoding ()
 		return 0
 	fi
 
-	bitrate=`exiftool -AudioBitrate "$input" | grep -o "[0-9]\+"`
+	bitrate=$(exiftool -AudioBitrate "$input" | grep -o "[0-9]\+")
 
 	# if bitrate cant be read
 	if [ -z "$bitrate" ]; then
@@ -54,7 +54,7 @@ find "$FROM" -name '*.*' | while read trackName; do
  	newPath=$trackName
 	
 	# Replace FROM folder name with TO
-	newPath=`sed "s|$FROM|$TO|g" <<< $newPath`
+	newPath=$(sed "s|$FROM|$TO|g" <<< $newPath)
 	
 	# Replace extension with mp3
 	newPath="${newPath%.*}.mp3"

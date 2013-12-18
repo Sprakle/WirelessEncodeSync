@@ -18,7 +18,7 @@ find "$ENCODE_DIRECTORY" -name '*.*' | while read trackName; do
 	newPath=$trackName
 
 	# Replace ENCODE directory name with MUSIC directory name
-	newPath=`sed "s|$ENCODE_DIRECTORY|$MUSIC_DIRECTORY|g" <<< $newPath`
+	newPath=$(sed "s|$ENCODE_DIRECTORY|$MUSIC_DIRECTORY|g" <<< $newPath)
 	
 	# Remove extension
 	newPath="${newPath%.*}"
