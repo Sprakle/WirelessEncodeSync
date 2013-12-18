@@ -7,7 +7,7 @@ Wireless encode and sync script intended for android music collections.
 1. Download an FTP server android app
 	* For me, "FTP Server" by "Rapfox" worked well
 	* Make sure you set /sdcard or /mnt/sdcard as the root folder
-2. Change settings at the top of Manage.sh
+2. Change settings at the top of Manage.sh (see "Settings" below)
 3. Run ./Manage.sh
 	* You may need to set the executable permission on the scripts
 	* Use a cron job if you want to the the script more than once
@@ -33,3 +33,17 @@ Wireless encode and sync script intended for android music collections.
 * The script is currently set to accept mp3, flac, and wav files, but you may be able to add more by modifying Encode.sh
 * No checks are made to make sure the phone's storage capacity is not exceeded
 * If you find any problems, email ben.cracknell.96@gmail.com
+
+##Settings
+You can change the scripts settings by either changing the Manage.sh file, or passing options when executing it.
+Options:
+```
+-m MUSIC_DIRECTORY
+-e ENCODE_DIRECTORY
+-b MAX_BITRATE
+-h HOST_IP
+-p HOST_PORT
+-u FTP_USER
+-s FTP_PASSWD
+-f FTP_DIRECTORY
+```
