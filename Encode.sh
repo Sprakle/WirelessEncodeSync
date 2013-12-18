@@ -46,7 +46,7 @@ encode()
 	extension="${trackName##*.}"
 	if [[ ! ${audioFormats[*]} =~ "$extension" ]]; then
 		echo "found non music file: $trackName"
-		continue
+		return
 	fi
 
 	echo -e "\e[1mProcessing track: '$trackName'\e[0m"
@@ -65,14 +65,14 @@ encode()
 	# if the track file already exists, skip
 	if [ -f "$newPath" ]; then
 		echo "File already exists, skipping"
-		continue
+		return
 	fi
 	
 	# if not acceptable, encode
 	if doesNeedEncoding "$trackName" "$BITRATE"; then
 		./ffmpeg -nostdin -v panic -i "$trackName" -b:a $BITRATE"k" "$newPath"
 		echo "Encoded to: '$newPath'"
-		continue
+		return
 	fi
 
 	echo "File will only be linked"
