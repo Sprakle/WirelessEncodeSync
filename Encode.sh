@@ -1,6 +1,8 @@
 #!/bin/bash
 # Encode script by Sprakle
 
+source Util.sh
+
 # settings
 FROM=$1  # on the computer
 TO=$2  # where the phone keeps its music
@@ -8,13 +10,15 @@ BITRATE=$3 # bitrate to encode non mp3 files to, max bitrate of mp3 files
 
 doesNeedEncoding ()
 {
+	source Util.sh
+
 	input=$1
 	max=$2
 	
 	# if not mp3
 	type="${input##*.}"
 	if [ "$type" != "mp3" ]; then
-		echo "File needs encoding because it is not an mp3"
+		log "File needs encoding because it is not an mp3" 3
 		return 0
 	fi
 
@@ -22,45 +26,35 @@ doesNeedEncoding ()
 
 	# if bitrate cant be read
 	if [ -z "$bitrate" ]; then
-		echo "mp3 file needs encoding because the bitrate cant be read"
+		log "mp3 file needs encoding because the bitrate cant be read" 3
 		return 0
 	fi
 
 	# if bitrate is too high
 	if [ $bitrate -gt $max ]; then
-		echo "mp3 file needs encoding because the bitrate is too high"
+		log "mp3 file needs encoding because the bitrate is too high" 3
 		return 0
 	fi
 
-	echo "mp3 file does not need encoding"
-	return 1
-}
-
-arrayContainsElement () {
-	audioFormats=('mp3' 'flac' 'wav')
-	
-	for i in "${audioFormats[@]}"; do
-		if [ "$i" == "$1" ] ; then
-			return 0
-		fi
-	done
-	
+	log "mp3 file does not need encoding" 3
 	return 1
 }
 
 encode()
 {
+	source Util.sh
+	
 	# remove backslashes create by parallel
 	trackName=$(sed 's/\\//g' <<< "$1")
 	
 	# Make sure file is a music file
 	extension="${trackName##*.}"
 	if ! arrayContainsElement "$extension" ${formatArray}; then
-		echo "found non music file: $trackName"
+		log "found non music file: $trackName" 3
 		return
 	fi
 
-	echo -e "\e[1mProcessing track: '$trackName'\e[0m"
+	log "Processing track: '$trackName'" 2
 	
  	newPath=$trackName
 	
@@ -75,36 +69,28 @@ encode()
 	
 	# if the track file already exists, skip
 	if [ -f "$newPath" ]; then
-		echo "File already exists, skipping"
+		log "File already exists, skipping" 3
 		return
 	fi
 	
 	# if not acceptable, encode
 	if doesNeedEncoding "$trackName" "$BITRATE"; then
 		./ffmpeg -nostdin -v panic -i "$trackName" -b:a $BITRATE"k" "$newPath"
-		echo "Encoded to: '$newPath'"
+		log "Encoded to: '$newPath'" 3
 		return
 	fi
 
-	echo "File will only be linked"
+	log "File will only be linked"  3
 	target=$trackName
 	link=$newPath
 	ln -s "$target" "$link"
 }
 
-tryNotify()
-{
-	echo "$1"
-	if type "notify-send" > /dev/null; then
-		notify-send "Android Wireless Sync" "$1"
-	fi
-}
-
-echo "Encoding tracks from '$FROM' to '$TO'"
+log "Encoding tracks from '$FROM' to '$TO'" 1
 
 # if parallel is installed, use it
 if type "parallel" > /dev/null; then
-	echo "Using parallel to encode music"
+	log "Using parallel to encode music" 1
 
 	export -f encode
 	export -f arrayContainsElement
@@ -115,13 +101,13 @@ if type "parallel" > /dev/null; then
 	find "$FROM" -type f | parallel --gnu --eta -j+0 encode "{}"
 	
 else
-	echo "NOT using parallel to encode music"
+	log "NOT using parallel to encode music" 1
 	
 	find "$FROM" -type f | while read trackName; do
 		encode "$trackName"
 	done
 fi
 
-tryNotify "Completed encoding or copying of all tracks"
+tryNotify "Completed encoding or copying of all tracks" 1
 
 exit 0

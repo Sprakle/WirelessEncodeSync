@@ -1,6 +1,8 @@
 #!/bin/bash
 # Encode and Sync script by Sprakle
 
+source Util.sh
+
 MUSIC_DIRECTORY="$HOME/Nexus Sync/Music" # on the computer
 ENCODE_DIRECTORY="$HOME/Nexus Sync/Encoded" # where to store encoded music
 MAX_BITRATE=256 # max bitrate per track
@@ -11,8 +13,10 @@ FTP_USER=sprakle
 FTP_PASSWD=nexusFTPswag
 FTP_DIRECTORY=Music # where the phone keeps its music
 
+VERBOSITY=1 # 0 is minimal verbosity, 3 is maximum
+
 # setting overrides
-while getopts "m:e:b:h:p:u:s:f:" opt; do
+while getopts "m:e:b:w:h:p:u:s:f:v:" opt; do
 	case $opt in
 		m)	MUSIC_DIRECTORY=$OPTARG;;
 		e)	ENCODE_DIRECTORY=$OPTARG;;
@@ -22,11 +26,14 @@ while getopts "m:e:b:h:p:u:s:f:" opt; do
 		u)	FTP_USER=$OPTARG;;
 		s)	FTP_PASSWD=$OPTARG;;
 		f)	FTP_DIRECTORY=$OPTARG;;
+		v)	VERBOSITY=$OPTARG;;
 	esac
 done
 
+export VERBOSITY
+
 # check for files that have been deleted from the music folder
-echo "Checking for files deleted from the music directory"
+log "Checking for files deleted from the music directory" 1
 find "$ENCODE_DIRECTORY" -name '*.*' -type f | while read trackName; do
 	
 	newPath=$trackName
@@ -39,12 +46,12 @@ find "$ENCODE_DIRECTORY" -name '*.*' -type f | while read trackName; do
 	
 	# Check
 	if [ ! -e "$newPath".* ]; then
-		echo "Deleted file found: $newPath"
+		log "Deleted file found: $newPath" 2
 		rm "$trackName"
 		continue
 	fi
 done
-echo "Done checking"
+log "Done checking" 1
 
 #Encode required files
 ./Encode.sh "$MUSIC_DIRECTORY" "$ENCODE_DIRECTORY" $MAX_BITRATE

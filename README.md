@@ -49,4 +49,5 @@ Options:
 -u FTP_USER
 -s FTP_PASSWD
 -f FTP_DIRECTORY
+-v VERBOSITY
 ```
