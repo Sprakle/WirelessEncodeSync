@@ -1,8 +1,6 @@
 #!/bin/bash
 # Encode script by Sprakle
 
-audioFormats=('mp3' 'flac' 'wav')
-
 # settings
 FROM=$1  # on the computer
 TO=$2  # where the phone keeps its music
@@ -38,13 +36,26 @@ doesNeedEncoding ()
 	return 1
 }
 
+arrayContainsElement () {
+	audioFormats=('mp3' 'flac' 'wav')
+	
+	for i in "${audioFormats[@]}"; do
+		if [ "$i" == "$1" ] ; then
+			return 0
+		fi
+	done
+	
+	return 1
+}
+
 encode()
 {
-	trackName=$1
+	# remove backslashes create by parallel
+	trackName=$(sed 's/\\//g' <<< "$1")
 	
 	# Make sure file is a music file
 	extension="${trackName##*.}"
-	if [[ ! ${audioFormats[*]} =~ "$extension" ]]; then
+	if ! arrayContainsElement "$extension" ${formatArray}; then
 		echo "found non music file: $trackName"
 		return
 	fi
@@ -91,9 +102,25 @@ tryNotify()
 
 echo "Encoding tracks from '$FROM' to '$TO'"
 
-find "$FROM" -type f | while read trackName; do
-	encode "$trackName"
-done
+# if parallel is installed, use it
+if type "parallel" > /dev/null; then
+	echo "Using parallel to encode music"
+
+	export -f encode
+	export -f arrayContainsElement
+	export -f doesNeedEncoding
+	export FROM
+	export TO
+	export BITRATE
+	find "$FROM" -type f | parallel --gnu --eta -j+0 encode "{}"
+	
+else
+	echo "NOT using parallel to encode music"
+	
+	find "$FROM" -type f | while read trackName; do
+		encode "$trackName"
+	done
+fi
 
 tryNotify "Completed encoding or copying of all tracks"
 

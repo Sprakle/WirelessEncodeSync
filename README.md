@@ -18,6 +18,7 @@ Wireless encode and sync script intended for android music collections.
 * lftp
 * libmp3lame0
 * notify-osd (optional, used to notify user at key points)
+* gnu parallels (optional, used to speed up encoding - 2 cores: double speed, 4 cores: quad speed, etc..)
 
 ## Under the hood:
 1. Check to see if the user deleted any files from their collection
