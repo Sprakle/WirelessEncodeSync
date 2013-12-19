@@ -7,6 +7,7 @@ source Util.sh
 FROM=$1  # on the computer
 TO=$2  # where the phone keeps its music
 BITRATE=$3 # bitrate to encode non mp3 files to, max bitrate of mp3 files
+WORKERS=$4
 
 doesNeedEncoding ()
 {
@@ -98,7 +99,7 @@ if type "parallel" > /dev/null; then
 	export FROM
 	export TO
 	export BITRATE
-	find "$FROM" -type f | parallel --gnu --eta -j+0 encode "{}"
+	find "$FROM" -type f | parallel --gnu --eta -j"$WORKERS" encode "{}"
 	
 else
 	log "NOT using parallel to encode music" 1
