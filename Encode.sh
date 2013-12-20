@@ -58,14 +58,8 @@ encode()
 	fi
 
 	log "Processing track: '$trackName'" 2
-	
- 	newPath=$trackName
-	
-	# Replace FROM folder name with TO
-	newPath=$(sed "s|$FROM|$TO|g" <<< "$newPath")
-	
-	# Replace extension with mp3
-	newPath="${newPath%.*}.mp3"
+
+	newPath=$(convertFilePath "$trackName" "$FROM" "$TO" "mp3")
 	
 	# Create directory if it doesn't exist
 	mkdir -p "${newPath%/*}/"

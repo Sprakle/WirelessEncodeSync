@@ -29,3 +29,18 @@ log () {
 		echo "$msg"
 	fi
 }
+
+convertFilePath () {
+	input=$1
+	fromPath=$2
+	toPath=$3
+	newExtension=$4
+	
+	# Replace FROM folder name with TO
+	newPath=$(sed "s|$fromPath|$toPath|g" <<< "$input")
+	
+	# Replace extension with mp3
+	newPath="${newPath%.*}.$newExtension"
+	
+	echo "$newPath"
+}
