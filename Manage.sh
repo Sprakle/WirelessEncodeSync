@@ -55,8 +55,8 @@ find "$ENCODE_DIRECTORY" -name '*.*' -type f | while read trackName; do
 done
 log "Done checking" 1
 
-#Encode required files
-./Encode.sh "$MUSIC_DIRECTORY" "$ENCODE_DIRECTORY" $MAX_BITRATE "$ENCODE_WORKERS"
+#Process files
+./ProcessFiles.sh "$MUSIC_DIRECTORY" "$ENCODE_DIRECTORY" $MAX_BITRATE "$ENCODE_WORKERS"
 
 #Sync it all
 ./Mirror.sh $HOST_IP $HOST_PORT "$FTP_USER" "$FTP_PASSWD" "$ENCODE_DIRECTORY" "$FTP_DIRECTORY"
