@@ -1,3 +1,5 @@
+#!/bin/bash
+
 tryNotify()
 {
 	log "$1" "$2"
