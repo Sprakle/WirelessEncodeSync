@@ -41,46 +41,55 @@ doesNeedEncoding ()
 	return 1
 }
 
-encode()
+processFile()
 {
-	audioFormats=('mp3' 'flac' 'wav')
+	audioFormats=('mp3' 'flac' 'wav') # these files will be encoded or linked if no encoding is needed
 	
 	source Util.sh
 	
-	# remove backslashes create by parallel
-	trackName=$(sed 's/\\//g' <<< "$1")
+	# remove backslashes created by parallel
+	fileName=$(sed 's/\\//g' <<< "$1")
 	
-	# Make sure file is a music file
-	extension="${trackName##*.}"
-	if ! arrayContainsElement audioFormats[@] "$extension"; then
-		log "found non music file: $trackName" 3
+	from=$2
+	to=$3
+	bitrate=$4
+	
+	extension="${fileName##*.}"
+	outputFileName=$(convertFilePath "$fileName" "$from" "$to" "mp3")
+	
+	# For music files
+	if arrayContainsElement audioFormats[@] "$extension"; then
+		encodeTrack "$fileName" "$outputFileName" "$bitrate"
 		return
 	fi
+}
 
-	log "Processing track: '$trackName'" 2
-
-	newPath=$(convertFilePath "$trackName" "$FROM" "$TO" "mp3")
+encodeTrack()
+{
+	fileName=$1
+	outputFileName=$2
+	bitrate=$3
+	
+	log "Encoding track: '$fileName'" 2
 	
 	# Create directory if it doesn't exist
-	mkdir -p "${newPath%/*}/"
+	mkdir -p "${outputFileName%/*}/"
 	
 	# if the track file already exists, skip
-	if [ -f "$newPath" ]; then
+	if [ -f "$outputFileName" ]; then
 		log "File already exists, skipping" 3
 		return
 	fi
 	
 	# if not acceptable, encode
-	if doesNeedEncoding "$trackName" "$BITRATE"; then
-		./ffmpeg -nostdin -v panic -i "$trackName" -b:a $BITRATE"k" "$newPath"
-		log "Encoded to: '$newPath'" 3
+	if doesNeedEncoding "$fileName" "$bitrate"; then
+		./ffmpeg -nostdin -v panic -i "$fileName" -b:a $bitrate"k" "$outputFileName"
+		log "Encoded to: '$outputFileName'" 3
 		return
 	fi
 
-	log "File will only be linked"  3
-	target=$trackName
-	link=$newPath
-	ln -s "$target" "$link"
+	log "File will only be linked" 3
+	ln -s "$fileName" "$outputFileName"
 }
 
 log "Encoding tracks from '$FROM' to '$TO'" 1
@@ -89,19 +98,17 @@ log "Encoding tracks from '$FROM' to '$TO'" 1
 if type "parallel" > /dev/null; then
 	log "Using parallel to encode music" 1
 
-	export -f encode
+	export -f processFile
+	export -f encodeTrack
 	export -f arrayContainsElement
 	export -f doesNeedEncoding
-	export FROM
-	export TO
-	export BITRATE
-	find "$FROM" -type f | parallel --gnu --eta -j"$WORKERS" encode "{}"
+	find "$FROM" -type f | parallel --gnu --eta -j"$WORKERS" processFile "{}" "'$FROM'" "'$TO'" "'$BITRATE'"
 	
 else
 	log "NOT using parallel to encode music" 1
 	
-	find "$FROM" -type f | while read trackName; do
-		encode "$trackName"
+	find "$FROM" -type f | while read fileName; do
+		processFile "$fileName"
 	done
 fi
 
