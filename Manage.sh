@@ -1,5 +1,5 @@
 #!/bin/bash
-# Encode and Sync script by Sprakle
+# By Sprakle
 
 source Util.sh
 

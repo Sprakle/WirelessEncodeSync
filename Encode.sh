@@ -1,5 +1,5 @@
 #!/bin/bash
-# Encode script by Sprakle
+# by Sprakle
 
 source Util.sh
 

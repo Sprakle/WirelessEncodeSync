@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sync script by johnnychicago and Sprakle
+# By johnnychicago and Sprakle
 
 source Util.sh
 
