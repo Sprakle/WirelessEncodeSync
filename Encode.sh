@@ -44,22 +44,36 @@ doesNeedEncoding ()
 processFile()
 {
 	audioFormats=('mp3' 'flac' 'wav') # these files will be encoded or linked if no encoding is needed
+	justLinkFormats=('m3u' 'pls' 'xspf') # these files will just be linked
 	
 	source Util.sh
 	
 	# remove backslashes created by parallel
 	fileName=$(sed 's/\\//g' <<< "$1")
 	
+	log "Processing file: '$fileName'" 2
+	
 	from=$2
 	to=$3
 	bitrate=$4
 	
 	extension="${fileName##*.}"
-	outputFileName=$(convertFilePath "$fileName" "$from" "$to" "mp3")
 	
 	# For music files
 	if arrayContainsElement audioFormats[@] "$extension"; then
+		log "File is in 'audioFormats' array, will only be encoded if needed" 3
+		
+		outputFileName=$(convertFilePath "$fileName" "$from" "$to" "mp3")
 		encodeTrack "$fileName" "$outputFileName" "$bitrate"
+		return
+	fi
+
+	# For files that only need to be linked
+	if arrayContainsElement justLinkFormats[@] "$extension"; then
+		log "File is in 'justLinkFormats' array, will only be linked" 3
+		
+		outputFileName=$(convertFilePath "$fileName" "$from" "$to" "$extension")
+		ln -s "$fileName" "$outputFileName"
 		return
 	fi
 }
@@ -69,8 +83,6 @@ encodeTrack()
 	fileName=$1
 	outputFileName=$2
 	bitrate=$3
-	
-	log "Encoding track: '$fileName'" 2
 	
 	# Create directory if it doesn't exist
 	mkdir -p "${outputFileName%/*}/"
@@ -88,7 +100,7 @@ encodeTrack()
 		return
 	fi
 
-	log "File will only be linked" 3
+	log "File does not need encoding, so it will only be linked" 3
 	ln -s "$fileName" "$outputFileName"
 }
 

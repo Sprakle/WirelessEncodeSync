@@ -36,6 +36,7 @@ Wireless encode and sync script intended for android music collections.
 * The script is currently set to accept mp3, flac, and wav files, but you may be able to add more by modifying Encode.sh
 * No checks are made to make sure the phone's storage capacity is not exceeded
 * If you find any problems, email ben.cracknell.96@gmail.com
+* Make sure your playlists have relative (not absolute) links
 
 ##Settings
 You can change the scripts settings by either changing the Manage.sh file, or passing options when executing it.
