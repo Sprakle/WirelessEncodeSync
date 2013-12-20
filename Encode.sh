@@ -43,6 +43,8 @@ doesNeedEncoding ()
 
 encode()
 {
+	audioFormats=('mp3' 'flac' 'wav')
+	
 	source Util.sh
 	
 	# remove backslashes create by parallel
@@ -50,7 +52,7 @@ encode()
 	
 	# Make sure file is a music file
 	extension="${trackName##*.}"
-	if ! arrayContainsElement "$extension" ${formatArray}; then
+	if ! arrayContainsElement audioFormats[@] "$extension"; then
 		log "found non music file: $trackName" 3
 		return
 	fi

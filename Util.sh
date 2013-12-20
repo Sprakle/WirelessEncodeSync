@@ -7,10 +7,11 @@ tryNotify()
 }
 
 arrayContainsElement () {
-	audioFormats=('mp3' 'flac' 'wav')
 	
-	for i in "${audioFormats[@]}"; do
-		if [ "$i" == "$1" ] ; then
+	declare -a array=("${!1}")
+	
+	for i in "${array[@]}"; do
+		if [ "$i" == "$2" ] ; then
 			return 0
 		fi
 	done
